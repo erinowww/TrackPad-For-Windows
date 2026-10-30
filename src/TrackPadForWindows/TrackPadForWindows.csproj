@@ -18,8 +18,8 @@
     <Description>Touchpad gestures and radial menu for Windows Precision Touchpads</Description>
     <Company>TrackPad For Windows</Company>
     <Copyright>Copyright © 2026 Anex</Copyright>
-    <Version>1.0.0</Version>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.0.1</Version>
+    <FileVersion>1.0.1.0</FileVersion>
     <NeutralLanguage>tr-TR</NeutralLanguage>
     <SatelliteResourceLanguages>en;tr</SatelliteResourceLanguages>
   </PropertyGroup>

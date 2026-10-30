@@ -84,7 +84,8 @@ Open **Settings** from the tray icon and drag parts into the menu. Advanced opti
 - Reads only the touchpad (HID Digitizer / Touch Pad) through the Windows Raw Input API. It does not read the keyboard and installs no hooks.
 - Sends a key combination only when you choose a `keys` action.
 - Makes no network connections. Settings stay in `%APPDATA%\TrackPadForWindows`.
-- Needs no administrator rights. The only registry write is the optional "Start with Windows" entry under `HKCU\...\Run`.
+- Needs no administrator rights. It writes to the registry only when you turn on "Start with Windows" yourself (one value under `HKCU\...\Run`, after a confirmation). It never does this on its own.
+- **Company computers:** endpoint security tools (CrowdStrike Falcon, Defender for Endpoint…) report any new `Run` entry as possible persistence, which is expected for an unsigned app. Ask your IT team before installing it, and leave "Start with Windows" off unless they approve.
 - Ships as a normal, uncompressed .NET application folder. Every release is built from this repository by GitHub Actions.
 
 ## Building from source

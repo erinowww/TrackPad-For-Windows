@@ -8,7 +8,6 @@ internal sealed class TrayApp : ApplicationContext
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
     private const string AppName = "TrackPad For Windows";
     private const string RunValue = "TrackPadForWindows";
-    private const string LegacyRunValue = "TouchMenu";
 
     private readonly InputWindow _window;
     private readonly TouchpadReader _reader = new();
@@ -25,7 +24,6 @@ internal sealed class TrayApp : ApplicationContext
     {
         _config = LoadConfigOrDefault();
         ApplyTapSettings();
-        MigrateStartupEntry();
 
         _tray = new NotifyIcon
         {
@@ -197,7 +195,6 @@ internal sealed class TrayApp : ApplicationContext
     {
         _config = LoadConfigOrDefault();
         ApplyTapSettings();
-        MigrateStartupEntry();
         RebuildTrayMenu();
         _tray.ShowBalloonTip(2000, AppName, "Ayarlar yeniden yüklendi.", ToolTipIcon.Info);
     }
@@ -214,28 +211,21 @@ internal sealed class TrayApp : ApplicationContext
         return key?.GetValue(RunValue) != null;
     }
 
+    // Kayıt defterine yalnızca kullanıcı bu seçeneği açıkça açarsa yazılır; program kendiliğinden yazmaz.
     private void SetStartup(bool enabled)
     {
+        if (enabled && MessageBox.Show(
+                "TrackPad For Windows, Windows açılışında otomatik başlatılsın mı?\n\n" +
+                "Bu ayar kayıt defterindeki kullanıcı başlangıç listesine (HKCU\\...\\Run) bir satır ekler. " +
+                "Kurumsal güvenlik yazılımları (CrowdStrike, Defender for Endpoint vb.) bunu uyarı olarak raporlayabilir. " +
+                "Şirket bilgisayarındaysan önce BT ekibine danış.",
+                AppName, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+            return;
+
         using var key = Registry.CurrentUser.CreateSubKey(RunKey);
         if (enabled) key.SetValue(RunValue, $"\"{Environment.ProcessPath}\"");
         else key.DeleteValue(RunValue, throwOnMissingValue: false);
         RebuildTrayMenu();
-    }
-
-    // Eski addaki başlangıç kaydını yeni ada taşı.
-    private static void MigrateStartupEntry()
-    {
-        try
-        {
-            using var key = Registry.CurrentUser.OpenSubKey(RunKey, writable: true);
-            if (key?.GetValue(LegacyRunValue) == null) return;
-            key.DeleteValue(LegacyRunValue, throwOnMissingValue: false);
-            key.SetValue(RunValue, $"\"{Environment.ProcessPath}\"");
-        }
-        catch
-        {
-            // Kayıt defterine erişilemezse başlangıç ayarı kullanıcıdan tekrar açılır.
-        }
     }
 
     private static void ShowError(string message) =>

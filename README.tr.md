@@ -84,7 +84,8 @@ Simgeden **Ayarlar**'ı açıp parçaları menüye sürükleyin. Gelişmiş ayar
 - Windows Raw Input API ile yalnızca touchpad'i (HID Digitizer / Touch Pad) okur. Klavyeyi okumaz, hook kurmaz.
 - Tuş kombinasyonunu yalnızca siz bir `keys` işlemi seçtiğinizde gönderir.
 - İnternete bağlanmaz. Ayarlar `%APPDATA%\TrackPadForWindows` klasöründe kalır.
-- Yönetici izni gerektirmez. Kayıt defterine yazdığı tek şey, isteğe bağlı "Windows ile başlat" kaydıdır (`HKCU\...\Run`).
+- Yönetici izni gerektirmez. Kayıt defterine yalnızca "Windows ile başlat" seçeneğini siz açtığınızda, onay aldıktan sonra yazar (`HKCU\...\Run` altında tek bir satır). Bunu hiçbir zaman kendiliğinden yapmaz.
+- **Şirket bilgisayarları:** kurumsal güvenlik yazılımları (CrowdStrike Falcon, Defender for Endpoint...) yeni bir `Run` kaydını olası kalıcılık girişimi olarak raporlar. İmzasız bir programda bu beklenen bir durumdur. Kurmadan önce BT ekibinize danışın ve onay vermedikçe "Windows ile başlat" seçeneğini kapalı tutun.
 - Sıkıştırılmamış, normal bir .NET uygulama klasörü olarak dağıtılır. Her sürüm GitHub Actions ile bu depodan derlenir.
 
 ## Kaynaktan derleme
